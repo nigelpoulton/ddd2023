@@ -11,7 +11,7 @@ volumes:
 
 services:
   web-fe:
-    image: nigelpoulton/ddd-book:swarm-app
+    image: nigelpoulton/ddd2023:stack2023
     command: python app.py
     deploy:
       replicas: 4
@@ -32,11 +32,15 @@ services:
     ports:
       - published: 5001
         target: 8080
+  redis:
+    image: "redis:alpine"
+    deploy:
+      placement:
+        constraints:
+          - 'node.role == worker'
+    networks:
+      - counter-net
     volumes:
       - type: volume
         source: counter-vol
-        target: /app
-  redis:
-    image: "redis:alpine"
-    networks:
-      - counter-net
+        target: /data
